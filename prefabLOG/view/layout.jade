@@ -1,0 +1,15 @@
+!!!
+html
+  script(src='/javascripts/log4javascript.js')
+  script(src='/javascripts/bundle.js')
+  script
+    var log = log4javascript.getLogger("main");
+    var appender = new log4javascript.InPageAppender();
+    log.addAppender(appender);
+    log.debug("This is a debugging message from the log4javascript in-page page");
+
+    
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body!= body
