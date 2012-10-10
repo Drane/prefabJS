@@ -1,0 +1,19 @@
+doctype 5
+html(lang="en")
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/log4javascript.js')
+    script(src='/javascripts/bundle.js')
+    script(src='/javascripts/log4javascript-to-console.js')
+    script
+      var log = log4javascript.getLogger("main");
+      var appender = new log4javascript.InPageAppender();
+      log.addAppender(appender);
+      log.debug("This is a debugging message from the log4javascript in-page page");
+      replaceConsole(log)
+      console.debug("replaced console");
+
+  body
+    #content
+      block mainContent

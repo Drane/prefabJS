@@ -1,13 +1,11 @@
 var prefabLOG;
 var extend = require("xtend");
 var winston = require('winston');
-var prefabLOGVIEW = require('prefabLOGVIEW')();
-
-prefabLOGVIEW.startServer();
 
 module.exports = exports = prefabLOG = function prefabLOG_module(options) {
 
 	var defaults = {
+		attachLogView : true,
 		module : "prefabLOG"
 	};
 
@@ -18,13 +16,24 @@ module.exports = exports = prefabLOG = function prefabLOG_module(options) {
 
 	console.log("in prefabLOG");
 
-	winston = require('winston');
-	// Requiring `winston-syslog` will expose
-	// `winston.transports.Syslog`
-	require('winston-syslog').Syslog;
-	winston.add(winston.transports.Syslog, options);
+	if (settings.attachLogView)
+		require('prefabLOGVIEW')();
+/*
+	[ 'log', 'debug', 'info', 'warn', 'error' ].forEach(function(item) {
+		winston[item]("test " + item);
+	});
+*/
+	var logger = new winston.Logger({
+		transports : [ new winston.transports.Console({
+			handleExceptions : true,
+			json : true,
+			colorize : true,
+			timestamp: true
+		}) ],
+		exitOnError : false
+	});
 
-	replaceConsole(winston);
+//	replaceConsole(logger);
 
 	var originalConsoleFunctions = {
 		log : console.log,
@@ -37,23 +46,29 @@ module.exports = exports = prefabLOG = function prefabLOG_module(options) {
 	function replaceConsole(logger) {
 		function replaceWith(fn) {
 			return function() {
-				console.log('A');
 				fn.apply(logger, arguments);
 			};
 		}
 		// logger = logger || winston;
 		[ 'log', 'debug', 'info', 'warn', 'error' ].forEach(function(item) {
-			console.dir(logger);
-			console.dir(logger['log']);
-			logger['log']('B', item);
-			logger.log('B', item);
-			logger.info('B', item);
-			console[item] = replaceWith(item === 'log' ? logger.info
-					: logger[item]);
-			console.log('A');
+//			console.dir(logger);
+//			console.dir(logger['log']);
+//			logger['log']('B', item);
+//			logger.log('B', item);
+//			logger.info('B', item);
+			console[item]=replaceWith(item === 'debug'?logger.info:logger[item]);
+//			console.log('A');
 		});
+		testConsoleLog('testConsoleLog');
+//		console.log('testConsoleLog');
 	}
 
+	function testConsoleLog(msg) {
+		[ 'log', 'debug', 'info', 'warn', 'error' ].forEach(function(item) {
+			console[item](msg);
+		});
+	}
+	
 	function restoreConsole() {
 		[ 'log', 'debug', 'info', 'warn', 'error' ].forEach(function(item) {
 			console[item] = originalConsoleFunctions[item];

@@ -1,5 +1,12 @@
 extends layout
 
-block mainContent
+block headContent
+  script(src='/javascripts/log4javascript.js')
+  script(src='/javascripts/log4javascript-to-console.js')
+  script(src='/socket.io/socket.io.js')
+  script(src='/javascripts/prefabBROWSERLOG.js')
+
+
+block bodyContent
   h1= title
   p Welcome to #{title}

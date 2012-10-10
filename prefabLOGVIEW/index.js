@@ -2,7 +2,6 @@ var prefabLOGVIEW;
 var extend = require("xtend");
 var express = require('express');
 var routes = require('./routes');
-//var sock = require('sockjs');
 var shoe = require('shoe');
 var dnode = require('dnode');
 
@@ -74,16 +73,17 @@ module.exports = exports = prefabLOGVIEW = function prefabLOGVIEW_module(options
 		            var res = s.replace(/[aeiou]{2,}/, 'oo').toUpperCase();
 		            cb(res);
 		        }
-//		    ,
-//			    log : function (level, params, cb) {
-//			    	var res = s.replace(/[aeiou]{2,}/, 'oo').toUpperCase();
-//			    	cb(level, params);
-//			    }
+		    ,
+			    log : function (level, params, cb) {
+			    	cb(level, params);
+			    }
 		    });
 		    d.pipe(stream).pipe(d);
 		});
 		sock.install(app.listen(process.env.port || app.get('port')), '/dnode'); 
 		console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);
+		
+		console.log(sock);
 	}
 	
 	function log(level, params){
